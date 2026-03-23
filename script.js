@@ -3,11 +3,56 @@
 const initialSquareDivSize = 16;
 
 const divContainer = document.querySelector(".container");
-
+const resetBtn = document.querySelector("#reset-btn");
+const resizeBtn = document.querySelector("#resize-btn");
 
 fillUpContainerDiv(initialSquareDivSize);
 
+divContainer.addEventListener("mouseover", (e) => {
+  const target = e.target;
 
+  if (e.target !== divContainer) {
+    let squareDivLightness = parseFloat(target.dataset.lightness);
+    const squareDivHue = target.dataset.hue;
+
+    if (squareDivLightness > 0) {
+      squareDivLightness -= 10;
+      target.dataset.lightness = squareDivLightness;
+
+      target.style.backgroundColor = `hsl(${squareDivHue}, 100%, ${squareDivLightness}%)`;
+      target.style.border = "none";
+    }
+  }
+});
+
+resetBtn.addEventListener("click", () => {
+  divContainer.innerHTML = "";
+  fillUpContainerDiv(initialSquareDivSize);
+});
+
+resizeBtn.addEventListener("click", () => {
+  let isnotValid = true;
+  
+  while (isnotValid) {
+    let userInput = prompt("Please enter a new grid size (Minimum 1 and Maximum 100):");
+
+    if (userInput === null) {
+      return;
+    }
+
+    let newSize = parseInt(userInput);
+
+    if (isNaN(newSize) || newSize < 1 || newSize > 100) {
+      alert("Error: Please enter a whole number between 1 and 100");
+      continue;
+    }
+
+    divContainer.innerHTML = "";
+    fillUpContainerDiv(newSize);
+    isnotValid = false;
+  }
+
+});
 
 function fillUpContainerDiv(numberOfDivs) {
   const squareSize = (100 / numberOfDivs) + "%" ;
@@ -28,21 +73,3 @@ function fillUpContainerDiv(numberOfDivs) {
     divContainer.appendChild(squareDiv);
   }
 }
-
-
-divContainer.addEventListener("mouseover", (e) => {
-  const target = e.target;
-
-  if (e.target !== divContainer) {
-    let squareDivLightness = parseFloat(target.dataset.lightness);
-    const squareDivHue = target.dataset.hue;
-
-    if (squareDivLightness > 0) {
-      squareDivLightness -= 10;
-      target.dataset.lightness = squareDivLightness;
-
-      target.style.backgroundColor = `hsl(${squareDivHue}, 100%, ${squareDivLightness}%)`;
-      target.style.border = "none";
-    }
-  }
-});
